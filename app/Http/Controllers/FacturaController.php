@@ -145,6 +145,8 @@ class FacturaController extends Controller
 
     /**
      * Funcion para editar la factura
+     * La funciones tiene que recibir como parametros:
+     * factura_id, codigo_facura, fecha_factura, pedido_id, articulo_id, cantidad
      */
     public function editarFactura(Request $request) {
         DB::beginTransaction();
@@ -181,7 +183,11 @@ class FacturaController extends Controller
     }
 
     /**
-     * Eliminar Factura
+     * Eliminar Factura 
+     * Funcion que recibe como parametros:
+     * factura_id desde el frontend
+     * La cual cambie el estado de la facura para que no se pueda mostrar 
+     * en la vista del front
      */
     public function eliminarFactura(Request $request) {
         DB::beginTransaction();
@@ -195,7 +201,7 @@ class FacturaController extends Controller
             return response()->json([
                 "status" => "ok",
                 "message" => "Factura eliminado con exito",
-                "factura" => $factura,
+                "factura" => $factura->codigo_factura,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
