@@ -16,6 +16,7 @@ class PedidoController extends Controller
             $array = array();
             foreach ($pedidos as $pedido) {
                 $objectPedido = new \stdClass();
+                $objectPedido->pedido_id = $pedido->id;
                 $objectPedido->codigo_pedido = $pedido->codigo_pedido;
                 $objectPedido->fecha_pedido = $pedido->fecha_pedido;
                 $objectPedido->cliente_nombre = $pedido->cliente->nombre;
@@ -35,7 +36,7 @@ class PedidoController extends Controller
             return response()->json([
                 "status" => "ok",
                 "message" => "Pedidos obtenidos con exito",
-                "pedido" => $array,
+                "pedidos" => $array,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

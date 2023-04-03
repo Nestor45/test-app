@@ -13,6 +13,7 @@ class ArticuloController extends Controller
             $array = array();
             foreach ($articulos as $articulo) {
                 $objectArticulo = new \stdClass();
+                $objectArticulo->articulo_id = $articulo->id;
                 $objectArticulo->codigo_articulo = $articulo->codigo_articulo;
                 $objectArticulo->nombre = $articulo->nombre;
                 $objectArticulo->precio = $articulo->precio;

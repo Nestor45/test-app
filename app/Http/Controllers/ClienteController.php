@@ -54,7 +54,7 @@ class ClienteController extends Controller
                 return response()->json([
                     "status" => "exists",
                     "message" => "Este cliente ya existe"
-                ], 200);
+                ], 201);
             }
             
             $cliente = new Cliente;

@@ -4,16 +4,37 @@ import { errorSweetAlert } from './../helpers/sweetAlertGlobals'
 
 const store = createStore({
     state: {
-        clientes:[]
+        clientes:[],
+        articulos:[],
+        pedidos:[],
+        facturas: [],
     },
     getters: {
         getClientes() {
             return state.clientes
+        },
+        getArticulos() {
+            return state.articulos
+        },
+        getPedidos() {
+            return state.pedidos
+        },
+        getFacturas() {
+            return state.facturas
         }
     },
     mutations: {
         setClientes(state, payload) {
             state.clientes = payload
+        },
+        setArticulos(state, payload) {
+            state.articulos = payload
+        },
+        setPedidos(state, payload) {
+            state.pedidos = payload
+        },
+        setFacturas(state, payload) {
+            state.facturas = payload
         }
     },
     actions: {
