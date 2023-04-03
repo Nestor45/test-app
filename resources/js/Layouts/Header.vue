@@ -2,7 +2,10 @@
     <v-card>
         <v-toolbar color="deep-purple-accent-4">
             <v-app-bar-nav-icon></v-app-bar-nav-icon>
-            <v-toolbar-title>Interview</v-toolbar-title>
+            <v-toolbar-title>
+                <v-btn @click="this.$router.push('/')">Interview</v-btn>
+                
+            </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon> <v-icon>mdi-magnify</v-icon> </v-btn>
             <v-btn icon> <v-icon>mdi-dots-vertical</v-icon> </v-btn>
@@ -27,7 +30,6 @@
 </template>
 
 <script>
-    import Usuarios from '../Pages/Usuarios.vue'
     export default {
         data: () => ({
         currentItem: 'tab-Web',
@@ -42,7 +44,7 @@
         }),
         methods: {
             imprimir (item) {
-                //this.$router.push('/'+item)
+                this.$router.push('/'+item)
                 this.$nextTick(() => { this.vista = item })
             },
             addItem (item) {
