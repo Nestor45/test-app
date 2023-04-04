@@ -72,14 +72,14 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
         },],
       }
     },
+    created() {
+        this.getClientes()
+    },
     computed: {
         clientesStore() {
             return this.$store.getters.getClientes
         }
     }, 
-    created() {
-        this.getClientes()
-    },
     methods: {
         async getClientes() {
             try {
@@ -113,12 +113,12 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                     alert('Los datos esta vacios')
                 } else {
                     if(this.title === 'Editar') {
-                        console.log(this.cliente.cliente_id)
+                        console.log(this.cliente)
                         let response = await axios.post('/api/editar-cliente', this.cliente)
                         console.log(response)
                         if (response.status === 200) {
                             if (response.data.status === 'ok') {
-                                this.$store.commit('setClientes', response.data.cliente)
+                                this.getClientes()
                                 this.cerrarModalCliente();
                             } else {
                                 alert('Ocurrió un error al editar el cliente')
@@ -161,6 +161,7 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                 let response = await axios.post('/api/eliminar-cliente', this.cliente)
                 if (response.status === 200) {
                     if (response.data.status === 'ok') {
+                        this.clientes.pop(clientesStore.cliente_id)
                         alert('Cliente eliminado con exito')
                     } else {
                         alert('Ocurrió un error al eliminar el cliente')
