@@ -28,11 +28,23 @@ class FacturaController extends Controller
                 $objectFactura->codigo_factura = $factura->codigo_factura;
                 $objectFactura->fecha_factura = $factura->fecha_factura;
                 $objectFactura->archivo = Storage::url($factura->archivo);
+                $objectFactura->pedido_id = $factura->pedido->id;
                 $objectFactura->codigo_pedido = $factura->pedido->codigo_pedido;
                 $objectFactura->fecha_pedido = $factura->pedido->fecha_pedido;
+                $objectFactura->cliente_id = $factura->pedido->cliente->id;
                 $objectFactura->nombre_cliente = $factura->pedido->cliente->nombre;
                 $objectFactura->cliente_razon_social = $factura->pedido->cliente->razon_social;
+                
+                $articulos = $factura->articulos->all();
+                foreach ($articulos as $articulo) {
+                    $objectFactura->articulo_id = $articulo->id;
+                    $objectFactura->codigo_articulo = $articulo->codigo_articulo;
+                    $objectFactura->articulo_nombre = $articulo->nombre;
+                    $objectFactura->articulo_precio = $articulo->precio;
+                    $objectFactura->cantidad = $articulo->pivot->cantidad;
+                }
                 array_push($array, $objectFactura);
+
             }
             return response()->json([
                 "status" => "ok",
@@ -58,7 +70,7 @@ class FacturaController extends Controller
         try {
             DB::beginTransaction();
             if ($request->file('archivo')) {
-                $factura = Factura::find($request->factura_id);
+                $factura = Factura::where('id',$request->factura_id)->first();
                 $f_hora_entrega = Carbon::now();
                 $current_day = Carbon::now();
                 $fecha_f = $f_hora_entrega->year . '-' . $f_hora_entrega->month . '-' . $f_hora_entrega->day;
@@ -66,8 +78,8 @@ class FacturaController extends Controller
                 $fecha_hora_concatenar_archivo = $current_day->day . '_' . $current_day->month . '_' . $current_day->year . '_' . $current_day->hour . '_' . $current_day->minute . '_' . $current_day->second . '_' . $current_day->micro;
                 
                 $file = $request->file('archivo');
-               /*  $extension = $file[0]->getClientOriginalExtension(); */
-                $extension = $file->getClientOriginalExtension();
+                $extension = $file[0]->getClientOriginalExtension();
+                //$extension = $file->getClientOriginalExtension();
                 if ($extension == 'xml' || $extension == 'pdf') {
                     $fileNameToStore = 'archivo_' . $fecha_hora_concatenar_archivo . '.' . $extension;
                 } else {
@@ -76,11 +88,11 @@ class FacturaController extends Controller
                         "message" => "El archivo no es permitido"
                     ], 500);
                 }
-                /* $path = $request->file('archivo')[0]->storeAs('public/facturas', $fileNameToStore); */
-                $path = $request->file('archivo')->storeAs('public/facturas', $fileNameToStore);
-                /* return response()->json([
+                $path = $request->file('archivo')[0]->storeAs('public/facturas', $fileNameToStore);
+                //$path = $request->file('archivo')->storeAs('public/facturas', $fileNameToStore);
+                /*return response()->json([
                     "status" => "ok",
-                    "message" => $path
+                    "message" => $request->factura_id
                 ], 500); */
                 $factura->archivo = $path;
                 $factura->save();

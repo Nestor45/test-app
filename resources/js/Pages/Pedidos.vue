@@ -38,9 +38,9 @@
         <v-card>
             <v-card-title>{{title}} Pedido</v-card-title>
             <v-form>
-                <v-text-field v-model="pedido.codigo_pedido" label="Codigo Pedido"></v-text-field>
+                <v-text-field v-model="pedido.codigo_pedido" label="Codigo de Pedido"></v-text-field>
                 <v-text-field v-model="pedido.cantidad" label="Cantidad"></v-text-field>
-                <v-text-field v-model="pedido.fecha_pedido" type="date" label="Fecha factura"></v-text-field>
+                <v-text-field v-model="pedido.fecha_pedido" type="date" label="Fecha del Pedido"></v-text-field>
                 <select v-model="pedido.cliente_id" label="Cliente" class="form-control minimal custom-select" required>
                     <option v-for="item in clientes" :key="item.cliente_id" :value="item.cliente_id">{{item.nombre}}</option>
                 </select>
@@ -59,7 +59,6 @@
 </template>
 
 <script>
-    import store from '@/store';
 import axios from 'axios';
     export default {
         data () {
@@ -131,7 +130,6 @@ import axios from 'axios';
                     if (response.status === 200) {
                         if (response.data.status === 'ok') {
                             this.$store.commit('setPedidos', response.data.pedidos)
-                            this.pedidos = response.data.pedidos
                         } else {
                             alert('Ocurrió un error al obtener los pedidos')
                         }
@@ -150,8 +148,7 @@ import axios from 'axios';
                 this.agregarPedidoM = false
                 this.pedido = {}
             },
-            editarPedido(item){
-                console.log(item)
+            editarPedido(item) {
                 this.title = 'Editar'
                 this.pedido.articulo_id = item.articulo_id
                 this.pedido.cliente_id = item.cliente_id
@@ -163,7 +160,7 @@ import axios from 'axios';
                 this.pedido.cliente_nombre = item.cliente_nombre
                 this.agregarPedidoM = true
             },
-            async guardarPedido(){
+            async guardarPedido() {
                 console.log(this.pedido)
                 try {
                     if (this.title === 'Editar'){
