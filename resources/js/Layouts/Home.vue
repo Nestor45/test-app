@@ -1,6 +1,6 @@
 <template>
-    <div>
-        HOLA HOME
+    <div class="text-center">
+        HOLA BIENVENIDOS
     </div>
 </template>
 <script>

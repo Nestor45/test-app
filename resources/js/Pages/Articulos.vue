@@ -52,7 +52,6 @@ import axios from 'axios';
         data() {
             return {
                 title: '',
-                articulos: [],
                 agregarArticuloM: false,
                 articulo: {
                     codigo_articulo: '',
@@ -77,7 +76,7 @@ import axios from 'axios';
             this.getArticulos()
         },
         computed: {
-            articuloStore() {
+            articulos() {
                 return this.$store.getters.getArticulos
             }
         },
@@ -89,7 +88,6 @@ import axios from 'axios';
                     if (response.status === 200) {
                         if (response.data.status === 'ok') {
                             this.$store.commit('setArticulos', response.data.articulos)
-                            this.articulos = response.data.articulos
                         } else {
                             alert('Ocurrió un error al obtener los articulos')
                         }
@@ -120,7 +118,6 @@ import axios from 'axios';
                         } else {
                             if (this.title === 'Editar') {
                                 let response = await axios.post('/api/editar-articulo', this.articulo)
-                                console.log(response)
                                 if (response.status === 200) {
                                     if (response.data.status === 'ok') {
                                         this.getArticulos()
@@ -138,8 +135,8 @@ import axios from 'axios';
                                 console.log(response)
                                 if (response.status === 200) {
                                     if (response.data.status === 'ok') {
-                                        this.articulos.push(response.data.articulo)
                                         this.$store.commit('setArticulos', response.data.articulo)
+                                        this.getArticulos()
                                         this.cerrarModal();
                                     } else {
                                         alert('Ocurrió un error al registrar el articulo')
@@ -169,8 +166,8 @@ import axios from 'axios';
                     let response = await axios.post('/api/eliminar-articulo', this.articulo)
                     if (response.status === 200) {
                         if (response.data.status === 'ok') {
-                            this.articulos.pop(item.articulo_id)
                             alert('Articulo eliminado con exito')
+                            this.getArticulos()
                         } else {
                             alert('Ocurrió un error al eliminar el Articulo')
                         }

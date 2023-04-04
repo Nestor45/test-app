@@ -26,7 +26,7 @@
                         <td>${{ item.articulo_precio }}</td>
                         <td>{{ item.codigo_articulo }}</td>
                         <td>
-                            <v-icon @click="">mdi-pencil</v-icon>
+                            <v-icon @click="editarPedido(item)">mdi-pencil</v-icon>
                             <v-icon @click="eliminarPedido(item)">mdi-delete</v-icon>
                         </td>
                     </tr>
@@ -41,14 +41,17 @@
                 <v-text-field v-model="pedido.codigo_pedido" label="Codigo Pedido"></v-text-field>
                 <v-text-field v-model="pedido.cantidad" label="Cantidad"></v-text-field>
                 <v-text-field v-model="pedido.fecha_pedido" type="date" label="Fecha factura"></v-text-field>
-                <v-select v-model="pedido.cliente_id" :items="clientesStore" label="Cliente" required>
-                    
-                </v-select>
+                <select v-model="pedido.cliente_id" label="Cliente" class="form-control minimal custom-select" required>
+                    <option v-for="item in clientes" :key="item.cliente_id" :value="item.cliente_id">{{item.nombre}}</option>
+                </select>
+                <select v-model="pedido.articulo_id" label="Articulo" class="form-control minimal custom-select" required>
+                    <option v-for="item in articulos" :key="item.articulo_id" :value="item.articulo_id">{{item.nombre}}</option>
+                </select>
                 <div v-if="title == 'Editar'">
-                    <v-btn @click="guardarCliente()" block class="mt-2" color="primary">Editar Pedido</v-btn>
+                    <v-btn @click="guardarPedido()" block class="mt-2" color="primary">Editar Pedido</v-btn>
                 </div>
                 <div v-else>
-                    <v-btn @click="guardarCliente()" block class="mt-2" color="primary">Agregar Pedido</v-btn>
+                    <v-btn @click="guardarPedido()" block class="mt-2" color="primary">Agregar Pedido</v-btn>
                 </div>
             </v-form>
         </v-card>
@@ -63,22 +66,14 @@ import axios from 'axios';
             return {
                 title: '',
                 agregarPedidoM: false,
-                pedidos: [],
-                articulos1: [],
-                clientes: [],
                 pedido: {
                     codigo_pedido: '',
                     fecha_pedido: '',
                     cliente_id: '',
                     articulo_id: '',
                     cantidad: '',
+
                 },
-                items: [
-                    'Item 1',
-                    'Item 2',
-                    'Item 3',
-                    'Item 4',
-                ],
             }
         },
         created() {
@@ -87,8 +82,14 @@ import axios from 'axios';
             this.getArticulos()
         },
         computed: {
-            clientesStore() {
-                return this.$store.getters.getClientesStore
+            pedidos() {
+                return this.$store.getters.getPedidos
+            },
+            clientes() {
+                return this.$store.getters.getClientes
+            },
+            articulos() {
+                return this.$store.getters.getArticulos
             }
         },
         methods: {
@@ -111,11 +112,9 @@ import axios from 'axios';
             async getArticulos() {
                 try {
                     let response = await axios.get('/api/articulos')
-                    console.log(response)
                     if (response.status === 200) {
                         if (response.data.status === 'ok') {
                             this.$store.commit('setArticulos', response.data.articulos)
-                            this.articulos1 = response.data.articulos
                         } else {
                             alert('Ocurrió un error al obtener los articulos')
                         }
@@ -144,8 +143,6 @@ import axios from 'axios';
                 }
             },
             agregarPedido() {
-                console.log(this.clientes)
-                console.log(this.pedidos)
                 this.title = 'Agregar'
                 this.agregarPedidoM = true
             },
@@ -153,12 +150,52 @@ import axios from 'axios';
                 this.agregarPedidoM = false
                 this.pedido = {}
             },
+            editarPedido(item){
+                console.log(item)
+                this.title = 'Editar'
+                this.pedido.articulo_id = item.articulo_id
+                this.pedido.cliente_id = item.cliente_id
+                this.pedido.cantidad = item.cantidad
+                this.pedido.pedido_id = item.pedido_id
+                this.pedido.codigo_pedido = item.codigo_pedido
+                this.pedido.codigo_articulo = item.codigo_articulo
+                this.pedido.fecha_pedido = item.fecha_pedido
+                this.pedido.cliente_nombre = item.cliente_nombre
+                this.agregarPedidoM = true
+            },
             async guardarPedido(){
+                console.log(this.pedido)
                 try {
-                    if (true){
-
+                    if (this.title === 'Editar'){
+                        console.log(this.pedido)
+                        let response = await axios.post('/api/editar-pedido', this.pedido)
+                        if (response.status === 200) {
+                            if (response.data.status === 'ok') {
+                                this.$store.commit('setPedidos', response.data.pedido)
+                                this.getPedidos()
+                                this.cerrarModal();
+                            } else {
+                                alert('Ocurrió un error al registrar el pedido')
+                            }
+                        } else if (response.status === 201) {
+                            this.cerrarModal();
+                            alert('El pedido ya existe')
+                        }
                     } else {
-
+                        console.log(this.pedido)
+                        let response = await axios.post('/api/agregar-pedido', this.pedido)
+                        if (response.status === 200) {
+                            if (response.data.status === 'ok') {
+                                this.$store.commit('setPedidos', response.data.pedido)
+                                this.getPedidos()
+                                this.cerrarModal();
+                            } else {
+                                alert('Ocurrió un error al registrar el pedido')
+                            }
+                        } else if (response.status === 201) {
+                            this.cerrarModal();
+                            alert('El pedido ya existe')
+                        }
                     }
                 } catch (error) {
                     this.cerrarModal();
@@ -166,12 +203,13 @@ import axios from 'axios';
                 }
             },  
             async eliminarPedido(item) {
+                console.log(item)
                 this.pedido.pedido_id = item.pedido_id
                 try {
                     let response = await axios.post('/api/eliminar-pedido', this.pedido)
                     if (response.status === 200) {
                         if (response.data.status === 'ok') {
-                            this.pedidos.pop(item.pedido_id)
+                            this.getPedidos()
                             alert('Pedido eliminado con exito')
                         } else {
                             alert('Ocurrió un error al eliminar el pedido')
@@ -183,7 +221,6 @@ import axios from 'axios';
                     alert('Ocurrio un error al eliminar un Pedido')
                 }
             }
-
         }
     }
 </script>

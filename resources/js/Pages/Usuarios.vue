@@ -51,7 +51,6 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
     data () {
       return {
         title: '',
-        clientes: [],
         agregarClienteM: false,
         cliente: {
             nombre: '',
@@ -76,7 +75,7 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
         this.getClientes()
     },
     computed: {
-        clientesStore() {
+        clientes() {
             return this.$store.getters.getClientes
         }
     }, 
@@ -87,7 +86,6 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                 if (response.status === 200) {
                     if (response.data.status === 'ok') {
                         this.$store.commit('setClientes', response.data.clientes)
-                        this.clientes = response.data.clientes
                     } else {
                         alert('Ocurrió un error al obtener los clientes')
                     }
@@ -130,8 +128,8 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                         let response = await axios.post('/api/registrar-cliente', this.cliente)
                         if (response.status === 200) {
                             if (response.data.status === 'ok') {
-                                this.clientes.push(response.data.cliente)
                                 this.$store.commit('setClientes', response.data.cliente)
+                                this.getClientes()
                                 this.cerrarModalCliente();
                             } else {
                                 alert('Ocurrió un error al registrar el cliente')
@@ -160,7 +158,7 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                 let response = await axios.post('/api/eliminar-cliente', this.cliente)
                 if (response.status === 200) {
                     if (response.data.status === 'ok') {
-                        this.clientes.pop(item.cliente_id)
+                        this.getClientes()
                         alert('Cliente eliminado con exito')
                     } else {
                         alert('Ocurrió un error al eliminar el cliente')

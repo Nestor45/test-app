@@ -19,12 +19,14 @@ class PedidoController extends Controller
                 $objectPedido->pedido_id = $pedido->id;
                 $objectPedido->codigo_pedido = $pedido->codigo_pedido;
                 $objectPedido->fecha_pedido = $pedido->fecha_pedido;
+                $objectPedido->cliente_id = $pedido->cliente->id;
                 $objectPedido->cliente_nombre = $pedido->cliente->nombre;
                 $objectPedido->cliente_razon_social = $pedido->cliente->razon_social;
 
                 $articulos = $pedido->articulos->all();
                 
                 foreach ($articulos as $articulo) {
+                    $objectPedido->articulo_id = $articulo->id;
                     $objectPedido->codigo_articulo = $articulo->codigo_articulo;
                     $objectPedido->articulo_nombre = $articulo->nombre;
                     $objectPedido->articulo_precio = $articulo->precio;

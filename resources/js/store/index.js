@@ -1,6 +1,4 @@
 import { createStore } from 'vuex'
-import router from '../router'
-import { errorSweetAlert } from './../helpers/sweetAlertGlobals'
 
 const store = createStore({
     state: {
@@ -8,21 +6,6 @@ const store = createStore({
         articulos:[],
         pedidos:[],
         facturas: [],
-    },
-    getters: {
-        getClientesStore() {
-            console.log("algo"+state.clientes)
-            return state.clientes
-        },
-        getArticulos() {
-            return state.articulos
-        },
-        getPedidos() {
-            return state.pedidos
-        },
-        getFacturas() {
-            return state.facturas
-        }
     },
     mutations: {
         setClientes(state, payload) {
@@ -38,11 +21,19 @@ const store = createStore({
             state.facturas = payload
         }
     },
-    actions: {
-        
-    },
-    modules: {
-
+    getters: {
+        getClientes(state) {
+            return state.clientes
+        },
+        getArticulos(state) {
+            return state.articulos
+        },
+        getPedidos(state) {
+            return state.pedidos
+        },
+        getFacturas(state) {
+            return state.facturas
+        }
     }
 })
-export default store
+export default store;
