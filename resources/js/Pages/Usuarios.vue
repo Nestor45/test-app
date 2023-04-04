@@ -113,7 +113,6 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                     alert('Los datos esta vacios')
                 } else {
                     if(this.title === 'Editar') {
-                        console.log(this.cliente)
                         let response = await axios.post('/api/editar-cliente', this.cliente)
                         console.log(response)
                         if (response.status === 200) {
@@ -148,7 +147,7 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                 alert('Ocurrió un error al registrar el cliente')
             }
         },
-        async editarCliente(clientesStore) {
+        editarCliente(clientesStore) {
             this.title = 'Editar'
             this.cliente.cliente_id = clientesStore.cliente_id
             this.cliente.nombre = clientesStore.nombre
