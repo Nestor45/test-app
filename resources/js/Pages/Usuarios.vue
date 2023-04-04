@@ -18,8 +18,8 @@
                         <td>{{ item.nombre }}</td>
                         <td>{{ item.razon_social }}</td>
                         <td>
-                            <th><v-icon @click="editarCliente(item)">mdi-pencil</v-icon></th>
-                            <th><v-icon @click="eliminarCliente(item)">mdi-delete</v-icon></th>
+                            <v-icon @click="editarCliente(item)">mdi-pencil</v-icon>
+                            <v-icon @click="eliminarCliente(item)">mdi-delete</v-icon>
                         </td>
                     </tr>
                 </tbody>
@@ -147,20 +147,20 @@ import { errorSweetAlert } from "../helpers/sweetAlertGlobals"
                 alert('Ocurrió un error al registrar el cliente')
             }
         },
-        editarCliente(clientesStore) {
+        editarCliente(item) {
             this.title = 'Editar'
-            this.cliente.cliente_id = clientesStore.cliente_id
-            this.cliente.nombre = clientesStore.nombre
-            this.cliente.razon_social = clientesStore.razon_social
+            this.cliente.cliente_id = item.cliente_id
+            this.cliente.nombre = item.nombre
+            this.cliente.razon_social = item.razon_social
             this.agregarClienteM = true
         },
-        async eliminarCliente(clientesStore){
-            this.cliente.cliente_id = clientesStore.cliente_id
+        async eliminarCliente(item){
+            this.cliente.cliente_id = item.cliente_id
             try {
                 let response = await axios.post('/api/eliminar-cliente', this.cliente)
                 if (response.status === 200) {
                     if (response.data.status === 'ok') {
-                        this.clientes.pop(clientesStore.cliente_id)
+                        this.clientes.pop(item.cliente_id)
                         alert('Cliente eliminado con exito')
                     } else {
                         alert('Ocurrió un error al eliminar el cliente')

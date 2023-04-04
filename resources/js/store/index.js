@@ -10,7 +10,8 @@ const store = createStore({
         facturas: [],
     },
     getters: {
-        getClientes() {
+        getClientesStore() {
+            console.log("algo"+state.clientes)
             return state.clientes
         },
         getArticulos() {
@@ -38,7 +39,7 @@ const store = createStore({
         }
     },
     actions: {
-
+        
     },
     modules: {
 

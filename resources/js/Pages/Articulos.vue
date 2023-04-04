@@ -155,21 +155,21 @@ import axios from 'axios';
                     alert('Ocurrió un error al guarda el articulos')
                 }
             },
-            editarArticulo(articuloStore) {
+            editarArticulo(item) {
                 this.title = 'Editar'
-                this.articulo.articulo_id = articuloStore.articulo_id
-                this.articulo.codigo_articulo = articuloStore.codigo_articulo
-                this.articulo.nombre = articuloStore.nombre
-                this.articulo.precio = articuloStore.precio
+                this.articulo.articulo_id = item.articulo_id
+                this.articulo.codigo_articulo = item.codigo_articulo
+                this.articulo.nombre = item.nombre
+                this.articulo.precio = item.precio
                 this.agregarArticuloM = true
             },
-            async eliminarArticulo(articuloStore){
-                this.articulo.articulo_id = articuloStore.articulo_id
+            async eliminarArticulo(item){
+                this.articulo.articulo_id = item.articulo_id
                 try {
                     let response = await axios.post('/api/eliminar-articulo', this.articulo)
                     if (response.status === 200) {
                         if (response.data.status === 'ok') {
-                            this.articulos.pop(articuloStore.articulo_id)
+                            this.articulos.pop(item.articulo_id)
                             alert('Articulo eliminado con exito')
                         } else {
                             alert('Ocurrió un error al eliminar el Articulo')

@@ -27,6 +27,10 @@
                         <td>{{ item.nombre_cliente }}</td>
                         <td>{{ item.cliente_razon_social }}</td>
                         <td><v-icon @click="verFactura(item.factura_id)">mdi-file</v-icon></td>
+                        <td>
+                            <v-icon @click="">mdi-pencil</v-icon>
+                            <v-icon @click="eliminarFactura(item)">mdi-delete</v-icon>
+                        </td>
                     </tr>
                 </tbody>
             </v-table>
@@ -38,8 +42,17 @@
     export default {
         data() {
             return {
+                title: '',
+                agregarFacturaM: false,
                 facturas:[],
                 verFacturaModal: false,
+                factura: {
+                    codigo_factura: '',
+                    fecha_factura: '',
+                    pedido_id: '',
+                    articulo_id: '',
+                    cantidad: ''
+                }
             }
         },
         created() {
@@ -66,6 +79,29 @@
             },
             async verFactura(item) {
                 console.log(item)
+            },
+            agregarFactura() {
+                this.title = 'Agregar'
+                this.agregarFacturaM = true
+            },
+            cerrarModal() {
+                this.agregarFacturaM = false
+            },
+            async eliminarFactura(item){
+                this.factura.factura_id = item.factura_id
+                try {
+                    let response = await axios.post('/api/eliminar-factura', this.factura)
+                    if (response.status === 200) {
+                        if (response.data.status === 'ok') {
+                            this.facturas.pop(item.factura_id)
+                            alert('factura eliminado con exito')
+                        } else {
+                            alert('Ocurrió un error al eliminar el factura')
+                        }
+                    }
+                } catch (error) {
+                    alert('Ocurrio un error al eliminar un factura')
+                }
             }
         }
     }
